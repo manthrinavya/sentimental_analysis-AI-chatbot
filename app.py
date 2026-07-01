@@ -1,41 +1,54 @@
 import streamlit as st
 from chatbot import chatbot
 
-st.set_page_config(page_title="Nullclass Chatbot", page_icon="🤖")
+st.set_page_config(
+    page_title="Customer Support Chatbot",
+    page_icon="🤖",
+    layout="centered"
+)
 
-st.title("🤖 sentimental analyis Customer Support Chatbot")
+st.title("🤖 Customer Support Chatbot")
+st.caption("Ask any course or customer support related question.")
 
-# Store chat history
+
 if "messages" not in st.session_state:
-    st.session_state.messages = []
+    st.session_state.messages = [
+        {
+            "role": "assistant",
+            "content": "👋 Hello! I'm your Nullclass Customer Support Assistant. Ask me anything!"
+        }
+    ]
 
-# Display previous messages
+
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Chat input
-if prompt := st.chat_input("Ask your question..."):
 
-    # Show user message
-    st.session_state.messages.append({"role": "user", "content": prompt})
+if prompt := st.chat_input("Type your question here..."):
+
+    
+    st.session_state.messages.append(
+        {"role": "user", "content": prompt}
+    )
 
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Get chatbot response
+    # Get response
     answer, sentiment = chatbot(prompt)
 
-    bot_response = f"""**Sentiment:** {sentiment}
+    response = f"""
+ **Sentiment:** **{sentiment}**
 
-**Answer:**
+💬 **Answer:**
+
 {answer}
 """
 
-    # Show bot response
     with st.chat_message("assistant"):
-        st.markdown(bot_response)
+        st.markdown(response)
 
     st.session_state.messages.append(
-        {"role": "assistant", "content": bot_response}
+        {"role": "assistant", "content": response}
     )
